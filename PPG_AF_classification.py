@@ -17,7 +17,7 @@ import torch.functional as F
 import torchvision.transforms as T
 from tqdm.auto import tqdm
 import torchmetrics
-device0 = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
+device0 = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 batch_size = 64
 
 # fit
@@ -107,11 +107,11 @@ test_dataloader = DataLoader(
     test_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 
 
-model = OmniScaleCNN(1, 1, 3000).to(device0)
+model = XCM(1, 1, 3000).to(device0)
 accuracy = torchmetrics.Accuracy(task="binary", num_classes=1).to(device0)
 
 criterion = nn.BCEWithLogitsLoss().to(device0)
-optimizer = torch.optim.Adam(model.parameters(), lr=2e-4)
+optimizer = torch.optim.Adam(model.parameters(), lr=2e-5)
 
 MIN_loss = 5000
 train_loss_list = []
@@ -167,7 +167,7 @@ for epoch in range(10000):
 
     if MIN_loss > (val_running_loss/val_count):
         torch.save(model.state_dict(
-        ), '../../model/architecture_waveform/PPG_OmniScaleCNN_callback.pt')
+        ), '../../model/architecture_waveform/PPG_XCM_callback.pt')
         MIN_loss = (val_running_loss/val_count)
 torch.save(model.state_dict(),
-           '../../model/architecture_waveform/PPG_OmniScaleCNN.pt')
+           '../../model/architecture_waveform/PPG_XCM.pt')
